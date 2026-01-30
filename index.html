@@ -1,1 +1,2022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Script Studio - FREE AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .free-badge {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 700;
+            font-size: 1.1em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .api-config {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            border: 2px solid #0088ee;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .api-config h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .api-config input {
+            width: 60%;
+            padding: 12px;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .api-config .btn-save {
+            background: #28a745;
+            padding: 12px 24px;
+        }
+
+        .api-config .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .api-config .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .api-config .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .info-box h4 {
+            margin-bottom: 10px;
+        }
+
+        .info-box ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .info-box a {
+            color: #ffff00;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group textarea {
+            min-height: 150px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exploit-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .exploit-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            float: right;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-top: -10px;
+            border-radius: 6px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+
+        .streaming-text {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Roblox Script Studio</h1>
+            <p>Powered by DeepSeek AI - Criador de UI, Scripts Luau e Ferramentas Exploit</p>
+            <div class="free-badge">🎉 100% GRÁTIS - API FREE!</div>
+        </div>
+
+        <!-- API Configuration -->
+        <div class="api-config">
+            <h3>🔑 Configuração OpenRouter (GRÁTIS)</h3>
+            <input type="password" id="apiKey" placeholder="Cole sua OpenRouter API Key aqui">
+            <button class="btn btn-save" onclick="saveApiKey()">💾 Salvar</button>
+            <span class="status disconnected" id="apiStatus">❌ Desconectado</span>
+            
+            <div class="info-box">
+                <h4>📋 Como obter sua API Key GRÁTIS:</h4>
+                <ol>
+                    <li>Acesse: <a href="https://openrouter.ai/" target="_blank">openrouter.ai</a></li>
+                    <li>Clique em "Sign In" (pode usar Google/GitHub)</li>
+                    <li>Vá em "API Keys" no menu</li>
+                    <li>Clique em "Create Key"</li>
+                    <li>Copie a chave e cole aqui</li>
+                    <li>Você ganha créditos GRÁTIS para testar!</li>
+                </ol>
+                <p style="margin-top: 10px;"><strong>💡 Modelo usado:</strong> DeepSeek R1 (100% GRATUITO, sem limites!)</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(0)">🤖 AI Criador de UI</button>
+            <button class="tab" onclick="switchTab(1)">📝 Gerador de Scripts</button>
+            <button class="tab" onclick="switchTab(2)">⚡ Exploit Tools</button>
+            <button class="tab" onclick="switchTab(3)">📚 Templates</button>
+            <button class="tab" onclick="switchTab(4)">❓ Ajuda</button>
+        </div>
+
+        <div class="content">
+            <!-- Tab 1: AI UI Creator -->
+            <div class="tab-content active">
+                <h2>🤖 Criador de UI com IA (GRÁTIS)</h2>
+                <p style="margin-bottom: 20px; color: #6c757d;">Descreva a UI que você quer criar e a IA gerará o código Luau para você usando DeepSeek AI.</p>
+                
+                <div class="input-group">
+                    <label>Descreva sua UI detalhadamente:</label>
+                    <textarea id="uiDescription" placeholder="Ex: Crie uma GUI moderna com fundo preto transparente, um título 'ESP & Speed Hack', um botão vermelho para ativar ESP, um slider horizontal para ajustar velocidade de 16 a 200, botão azul de fly, e um botão X vermelho para fechar a GUI no canto superior direito"></textarea>
+                </div>
+
+                <button class="btn" onclick="generateUI()">✨ Gerar UI com IA</button>
+
+                <div id="uiOutput"></div>
+            </div>
+
+            <!-- Tab 2: Script Generator -->
+            <div class="tab-content">
+                <h2>📝 Gerador de Scripts com IA</h2>
+                <p style="margin-bottom: 20px; color: #6c757d;">Gere scripts personalizados para Roblox usando IA gratuita.</p>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>🎯 Script Personalizado</h3>
+                        <div class="input-group">
+                            <label>O que o script deve fazer?</label>
+                            <textarea id="scriptDescription" placeholder="Ex: Script que teleporta automaticamente para todas as moedas no workspace, coleta elas, e adiciona um GUI com contador de moedas coletadas"></textarea>
+                        </div>
+                        <button class="btn" onclick="generateScript()">🚀 Gerar Script com IA</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🔥 Geração Avançada</h3>
+                        <div class="input-group">
+                            <label>Tipo de Script:</label>
+                            <select id="scriptType">
+                                <option value="gui">GUI Completa</option>
+                                <option value="farm">Auto Farm</option>
+                                <option value="combat">Combat System</option>
+                                <option value="teleport">Teleport System</option>
+                                <option value="esp">ESP System</option>
+                                <option value="anticheat">Anti-Cheat Bypass</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Detalhes adicionais:</label>
+                            <textarea id="advancedDetails" placeholder="Especifique recursos extras que deseja..." style="min-height: 80px;"></textarea>
+                        </div>
+                        <button class="btn" onclick="generateAdvancedScript()">⚡ Gerar Avançado</button>
+                    </div>
+                </div>
+
+                <div id="scriptOutput"></div>
+            </div>
+
+            <!-- Tab 3: Exploit Tools -->
+            <div class="tab-content">
+                <h2>⚡ Exploit Tools</h2>
+                
+                <div class="warning">
+                    <strong>⚠️ Aviso:</strong> Estas ferramentas são para fins educacionais. Use com responsabilidade e apenas em jogos próprios ou com permissão.
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>🔧 Remote Event Exploiter</h3>
+                        <div class="input-group">
+                            <label>Nome do Remote:</label>
+                            <input type="text" id="remoteName" placeholder="Ex: DamageEvent">
+                        </div>
+                        <div class="input-group">
+                            <label>Argumentos (separados por vírgula):</label>
+                            <input type="text" id="remoteArgs" placeholder='Ex: Player, 100, true'>
+                        </div>
+                        <div class="input-group">
+                            <label>Tipo:</label>
+                            <select id="remoteType">
+                                <option value="RemoteEvent">RemoteEvent</option>
+                                <option value="RemoteFunction">RemoteFunction</option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="generateRemoteExploit()">🔥 Gerar Exploit</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎮 Game Manipulation</h3>
+                        <div class="input-group">
+                            <label>Tipo de Manipulação:</label>
+                            <select id="manipType">
+                                <option value="walkspeed">WalkSpeed Modifier</option>
+                                <option value="jumppower">JumpPower Modifier</option>
+                                <option value="health">Health Modifier</option>
+                                <option value="gravity">Gravity Modifier</option>
+                                <option value="godmode">God Mode</option>
+                                <option value="noclip">Noclip</option>
+                                <option value="fly">Fly Hack</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Valor (se aplicável):</label>
+                            <input type="number" id="manipValue" placeholder="Ex: 100">
+                        </div>
+                        <button class="btn" onclick="generateManipulation()">⚙️ Gerar Script</button>
+                    </div>
+                </div>
+
+                <div class="exploit-section">
+                    <h4>🔍 Ferramentas Avançadas com IA</h4>
+                    <button class="btn" onclick="generateAIRemoteSpy()" style="margin: 5px;">🕵️ Remote Spy Avançado</button>
+                    <button class="btn" onclick="generateAIDex()" style="margin: 5px;">🔍 Dex Explorer AI</button>
+                    <button class="btn" onclick="generateAIUniversalESP()" style="margin: 5px;">👁️ Universal ESP AI</button>
+                    <button class="btn" onclick="generateAIAntiAFK()" style="margin: 5px;">⏰ Anti-AFK AI</button>
+                </div>
+
+                <div id="exploitOutput"></div>
+            </div>
+
+            <!-- Tab 4: Templates -->
+            <div class="tab-content">
+                <h2>📚 Templates Prontos</h2>
+                <p style="margin-bottom: 20px; color: #6c757d;">Scripts prontos para usar imediatamente!</p>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>👁️ ESP Completo</h3>
+                        <p>Veja todos os jogadores através das paredes com highlighting.</p>
+                        <button class="btn" onclick="loadTemplate('esp')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Speed Hack</h3>
+                        <p>Modifique sua velocidade de movimento.</p>
+                        <button class="btn" onclick="loadTemplate('speed')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>🚫 Noclip</h3>
+                        <p>Atravesse paredes livremente.</p>
+                        <button class="btn" onclick="loadTemplate('noclip')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>✈️ Fly Hack</h3>
+                        <p>Voe pelo mapa (pressione X).</p>
+                        <button class="btn" onclick="loadTemplate('fly')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>📍 Teleport GUI</h3>
+                        <p>Teleporte-se para outros jogadores.</p>
+                        <button class="btn" onclick="loadTemplate('teleport')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>🤖 Auto Farm</h3>
+                        <p>Colete itens automaticamente.</p>
+                        <button class="btn" onclick="loadTemplate('autofarm')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ God Mode</h3>
+                        <p>Saúde infinita.</p>
+                        <button class="btn" onclick="loadTemplate('godmode')">Carregar</button>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Aimbot Básico</h3>
+                        <p>Mira automática para combat games.</p>
+                        <button class="btn" onclick="loadTemplate('aimbot')">Carregar</button>
+                    </div>
+                </div>
+
+                <div id="templateOutput"></div>
+            </div>
+
+            <!-- Tab 5: Help -->
+            <div class="tab-content">
+                <h2>❓ Ajuda e Tutoriais</h2>
+                
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3>🚀 Como Começar</h3>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li><strong>Configure a API OpenRouter:</strong> Crie conta grátis em openrouter.ai</li>
+                        <li><strong>Copie a API Key:</strong> Vá em API Keys → Create Key</li>
+                        <li><strong>Cole aqui:</strong> Insira no campo no topo e clique em "Salvar"</li>
+                        <li><strong>Escolha uma aba:</strong> AI Criador, Scripts, Exploits ou Templates</li>
+                        <li><strong>Descreva ou escolha:</strong> Seja específico ou use templates prontos</li>
+                        <li><strong>Gere o código:</strong> Clique no botão e aguarde a IA processar</li>
+                        <li><strong>Copie e use:</strong> Use o botão "Copiar" e cole no executor</li>
+                    </ol>
+                </div>
+
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3>💡 Dicas para Melhores Resultados</h3>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Seja <strong>específico</strong> na descrição</li>
+                        <li>Mencione <strong>cores, posições e tamanhos</strong></li>
+                        <li>Especifique <strong>funcionalidades desejadas</strong></li>
+                        <li>Use exemplos: "botão vermelho", "slider de 0 a 100"</li>
+                        <li>Para scripts complexos, divida em partes menores</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3>🎯 Exemplos de Prompts</h3>
+                    
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0;">Para UI:</h4>
+                    <p style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        "Crie uma GUI profissional com fundo escuro semi-transparente (0.3), título 'HACK MENU v2.0' em fonte grande e amarela no topo, 5 botões verticais (ESP vermelho, Speed verde, Fly azul, Noclip roxo, God Mode dourado), cada botão com ícone emoji, um slider de walkspeed (16-200) com label mostrando valor atual, e botão X vermelho no canto para fechar"
+                    </p>
+
+                    <h4 style="color: #667eea; margin: 15px 0 10px 0;">Para Scripts:</h4>
+                    <p style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        "Script que localiza todos os NPCs no workspace, teleporta para cada um, aguarda 0.5 segundos, clica automaticamente neles usando FireClickDetector, e depois teleporta para o próximo. Adicione um GUI com botão Start/Stop e contador de NPCs clicados"
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🎮 Como Usar os Scripts Gerados</h3>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li>Baixe um <strong>executor</strong> (Synapse X, KRNL, Fluxus, Arceus X)</li>
+                        <li>Injete o executor no Roblox</li>
+                        <li><strong>Copie</strong> o código gerado pelo site</li>
+                        <li><strong>Cole</strong> no executor</li>
+                        <li>Clique em <strong>"Execute"</strong> ou "Inject"</li>
+                        <li>Aproveite! 🎉</li>
+                    </ol>
+                    
+                    <div class="warning" style="margin-top: 15px;">
+                        <strong>⚠️ Importante:</strong> Use apenas em jogos próprios ou onde você tem permissão. Exploiting pode resultar em ban!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = localStorage.getItem('openrouterApiKey') || '';
+        
+        // Carregar API key salva
+        if (apiKey) {
+            document.getElementById('apiKey').value = apiKey;
+            document.getElementById('apiStatus').className = 'status connected';
+            document.getElementById('apiStatus').textContent = '✅ Conectado';
+        }
+
+        function saveApiKey() {
+            apiKey = document.getElementById('apiKey').value.trim();
+            
+            if (!apiKey || apiKey.length < 10) {
+                alert('❌ API Key inválida! Verifique se copiou corretamente.');
+                return;
+            }
+            
+            localStorage.setItem('openrouterApiKey', apiKey);
+            document.getElementById('apiStatus').className = 'status connected';
+            document.getElementById('apiStatus').textContent = '✅ Conectado';
+            alert('✅ API Key salva com sucesso! Você pode usar a IA agora.');
+        }
+
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            
+            contents.forEach((content, i) => {
+                content.classList.toggle('active', i === index);
+            });
+        }
+
+        async function callOpenRouterAPI(prompt, systemPrompt = "You are an expert Roblox Luau script developer. Generate clean, working, and well-commented code.") {
+            if (!apiKey) {
+                alert('⚠️ Configure sua OpenRouter API Key primeiro!');
+                throw new Error('API Key não configurada');
+            }
+
+            try {
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Roblox Script Studio'
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek/deepseek-r1-0528:free',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: systemPrompt
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 4000
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'Erro na API');
+                }
+
+                const data = await response.json();
+                return data.choices[0]?.message?.content || 'Erro ao gerar resposta';
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro: ' + error.message + '\n\nVerifique se sua API Key está correta e se você tem créditos disponíveis.');
+                throw error;
+            }
+        }
+
+        function displayOutput(elementId, content, title = '') {
+            const outputDiv = document.getElementById(elementId);
+            const cleanContent = content.replace(/```lua\n?/g, '').replace(/```\n?/g, '');
+            
+            outputDiv.innerHTML = `
+                ${title ? `<h3 style="margin-bottom: 15px; color: #667eea;">${title}</h3>` : ''}
+                <button class="copy-btn" onclick="copyToClipboard(this.nextElementSibling.textContent)">📋 Copiar Código</button>
+                <div class="output">${cleanContent}</div>
+            `;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Código copiado para a área de transferência!');
+            }).catch(() => {
+                // Fallback para navegadores antigos
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Código copiado!');
+            });
+        }
+
+        async function generateUI() {
+            const description = document.getElementById('uiDescription').value.trim();
+            if (!description) {
+                alert('⚠️ Por favor, descreva a UI que você quer criar!');
+                return;
+            }
+
+            displayOutput('uiOutput', '<div class="loading">🤖 Gerando UI com IA DeepSeek</div>');
+
+            const prompt = `Create a complete Roblox Luau script that implements the following UI: ${description}
+
+Requirements:
+- Create a ScreenGui with proper parent (game.Players.LocalPlayer.PlayerGui)
+- Include ALL necessary UI elements (Frames, Buttons, Labels, Sliders, etc.)
+- Add complete functionality for all buttons and interactive elements
+- Use modern UI design with rounded corners (UICorner)
+- Add proper colors and styling
+- Include draggable functionality for the main frame
+- Add comments explaining each section
+- Make it production-ready and bug-free
+
+Return ONLY the Luau code, no explanations.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('uiOutput', code, '✨ UI Gerada com Sucesso!');
+            } catch (error) {
+                displayOutput('uiOutput', '❌ Erro ao gerar código. Verifique sua API Key e tente novamente.');
+            }
+        }
+
+        async function generateScript() {
+            const description = document.getElementById('scriptDescription').value.trim();
+            if (!description) {
+                alert('⚠️ Por favor, descreva o script que você quer criar!');
+                return;
+            }
+
+            displayOutput('scriptOutput', '<div class="loading">🤖 Gerando script com IA DeepSeek</div>');
+
+            const prompt = `Create a complete, working Roblox Luau script that does: ${description}
+
+Requirements:
+- Write clean, optimized code
+- Add error handling where necessary
+- Include helpful comments
+- Use proper Roblox services (game:GetService)
+- Make it production-ready
+- Ensure it works on any executor
+
+Return ONLY the Luau code, no explanations.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('scriptOutput', code, '📝 Script Gerado com Sucesso!');
+            } catch (error) {
+                displayOutput('scriptOutput', '❌ Erro ao gerar código. Verifique sua API Key e tente novamente.');
+            }
+        }
+
+        async function generateAdvancedScript() {
+            const type = document.getElementById('scriptType').value;
+            const details = document.getElementById('advancedDetails').value.trim();
+
+            const typeDescriptions = {
+                gui: 'a complete, professional GUI system with multiple tabs and features',
+                farm: 'an advanced auto-farm system that efficiently collects items',
+                combat: 'a combat assistance system with auto-attack and target selection',
+                teleport: 'a teleportation system with waypoints and player teleport',
+                esp: 'a comprehensive ESP system showing players, items, and NPCs',
+                anticheat: 'an anti-cheat bypass system with various protection methods'
+            };
+
+            const description = `${typeDescriptions[type]}${details ? '. Additional requirements: ' + details : ''}`;
+
+            displayOutput('scriptOutput', '<div class="loading">🤖 Gerando script avançado com IA DeepSeek</div>');
+
+            const prompt = `Create ${description} for Roblox.
+
+Requirements:
+- Highly optimized and efficient code
+- Professional-grade implementation
+- Complete error handling
+- Extensive comments
+- Modern coding practices
+- Works on all executors
+
+Return ONLY the Luau code, no explanations.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('scriptOutput', code, '⚡ Script Avançado Gerado!');
+            } catch (error) {
+                displayOutput('scriptOutput', '❌ Erro ao gerar código. Verifique sua API Key e tente novamente.');
+            }
+        }
+
+        function generateRemoteExploit() {
+            const remoteName = document.getElementById('remoteName').value.trim();
+            const args = document.getElementById('remoteArgs').value.trim();
+            const remoteType = document.getElementById('remoteType').value;
+            
+            if (!remoteName) {
+                alert('⚠️ Digite o nome do Remote!');
+                return;
+            }
+
+            const argsArray = args ? args.split(',').map(arg => {
+                arg = arg.trim();
+                if (arg === 'true' || arg === 'false') return arg;
+                if (!isNaN(arg)) return arg;
+                return `"${arg}"`;
+            }).join(', ') : '';
+
+            const code = `-- Remote ${remoteType} Exploit
+-- Remote: ${remoteName}
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Tentar encontrar o remote
+local remote = ReplicatedStorage:FindFirstChild("${remoteName}", true)
+
+if not remote then
+    warn("Remote '${remoteName}' não encontrado!")
+    return
+end
+
+print("✅ Remote encontrado:", remote:GetFullName())
+
+${remoteType === 'RemoteEvent' ? `
+-- FireServer
+${argsArray ? `local args = {${argsArray}}
+remote:FireServer(unpack(args))` : `remote:FireServer()`}
+
+print("✅ Remote disparado!")
+
+-- Para spam (descomente):
+--[[ 
+while true do
+    wait(0.1)
+    ${argsArray ? `remote:FireServer(unpack(args))` : `remote:FireServer()`}
+end
+]]
+` : `
+-- InvokeServer
+${argsArray ? `local args = {${argsArray}}
+local result = remote:InvokeServer(unpack(args))` : `local result = remote:InvokeServer()`}
+
+print("✅ Remote invocado! Resultado:", result)
+`}`;
+
+            displayOutput('exploitOutput', code, '🔧 Exploit de Remote Gerado!');
+        }
+
+        function generateManipulation() {
+            const type = document.getElementById('manipType').value;
+            const value = document.getElementById('manipValue').value || '100';
+            
+            const scripts = {
+                walkspeed: `-- WalkSpeed Modifier
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local speed = ${value}
+
+-- Função para aplicar speed
+local function setSpeed(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = speed
+    print("✅ WalkSpeed definido para:", speed)
+end
+
+-- Aplicar no personagem atual
+if Player.Character then
+    setSpeed(Player.Character)
+end
+
+-- Aplicar quando spawnar
+Player.CharacterAdded:Connect(setSpeed)`,
+
+                jumppower: `-- JumpPower Modifier
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local power = ${value}
+
+local function setJump(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.JumpPower = power
+    -- Para UseJumpPower desabilitado:
+    humanoid.JumpHeight = power / 7.2
+    print("✅ JumpPower definido para:", power)
+end
+
+if Player.Character then
+    setJump(Player.Character)
+end
+
+Player.CharacterAdded:Connect(setJump)`,
+
+                health: `-- Health Modifier
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local newHealth = ${value}
+
+local function setHealth(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.MaxHealth = newHealth
+    humanoid.Health = newHealth
+    print("✅ Health definido para:", newHealth)
+end
+
+if Player.Character then
+    setHealth(Player.Character)
+end
+
+Player.CharacterAdded:Connect(setHealth)`,
+
+                gravity: `-- Gravity Modifier
+local newGravity = ${value}
+workspace.Gravity = newGravity
+print("✅ Gravity definido para:", newGravity, "(Default: 196.2)")`,
+
+                godmode: `-- God Mode
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local function enableGodMode(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    
+    humanoid.MaxHealth = math.huge
+    humanoid.Health = math.huge
+    
+    humanoid.Changed:Connect(function(property)
+        if property == "Health" and humanoid.Health < math.huge then
+            humanoid.Health = math.huge
+        end
+    end)
+    
+    print("✅ God Mode ativado!")
+end
+
+if Player.Character then
+    enableGodMode(Player.Character)
+end
+
+Player.CharacterAdded:Connect(enableGodMode)`,
+
+                noclip: `-- Noclip
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+
+local noclipEnabled = true
+
+local function noclip()
+    if Player.Character then
+        for _, part in pairs(Player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end
+
+RunService.Stepped:Connect(function()
+    if noclipEnabled then
+        noclip()
+    end
+end)
+
+print("✅ Noclip ativado!")`,
+
+                fly: `-- Fly Hack (Pressione X para ativar/desativar)
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+local flying = false
+local speed = ${value}
+local bodyVelocity, bodyGyro
+
+local function startFly()
+    local character = Player.Character
+    if not character then return end
+    
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+    
+    flying = true
+    
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    bodyVelocity.Parent = rootPart
+    
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+    bodyGyro.Parent = rootPart
+    
+    while flying do
+        local camera = workspace.CurrentCamera
+        bodyGyro.CFrame = camera.CFrame
+        
+        local direction = Vector3.new(0, 0, 0)
+        
+        if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+            direction = direction + camera.CFrame.LookVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+            direction = direction - camera.CFrame.LookVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+            direction = direction - camera.CFrame.RightVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+            direction = direction + camera.CFrame.RightVector
+        end
+        
+        bodyVelocity.Velocity = direction * speed
+        
+        task.wait()
+    end
+end
+
+local function stopFly()
+    flying = false
+    if bodyVelocity then bodyVelocity:Destroy() end
+    if bodyGyro then bodyGyro:Destroy() end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.X then
+        if flying then
+            stopFly()
+            print("❌ Fly desativado")
+        else
+            startFly()
+            print("✅ Fly ativado! (Speed: ${value})")
+        end
+    end
+end)
+
+print("🎮 Fly carregado! Pressione X para ativar/desativar")`
+            };
+
+            displayOutput('exploitOutput', scripts[type], '⚙️ Script de Manipulação Gerado!');
+        }
+
+        async function generateAIRemoteSpy() {
+            displayOutput('exploitOutput', '<div class="loading">🤖 Gerando Remote Spy avançado com IA</div>');
+
+            const prompt = `Create an advanced Remote Spy script for Roblox that:
+- Monitors all RemoteEvents and RemoteFunctions in ReplicatedStorage
+- Logs all calls with arguments in a clean format
+- Creates a GUI showing real-time remote activity
+- Has filters for specific remotes
+- Shows source and destination
+- Has copy functionality for each call
+- Color codes different types of remotes
+
+Return ONLY the Luau code.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('exploitOutput', code, '🕵️ Remote Spy Avançado Gerado!');
+            } catch (error) {
+                displayOutput('exploitOutput', '❌ Erro ao gerar código.');
+            }
+        }
+
+        async function generateAIDex() {
+            displayOutput('exploitOutput', '<div class="loading">🤖 Gerando Dex Explorer com IA</div>');
+
+            const prompt = `Create a Dex-style explorer for Roblox with GUI that:
+- Shows the entire game hierarchy (workspace, players, replicated storage, etc.)
+- Has expandable/collapsible tree view
+- Shows properties of selected instances
+- Has search functionality
+- Allows copying paths
+- Shows instance class names and names
+- Has a clean, professional UI
+
+Return ONLY the Luau code.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('exploitOutput', code, '🔍 Dex Explorer Gerado!');
+            } catch (error) {
+                displayOutput('exploitOutput', '❌ Erro ao gerar código.');
+            }
+        }
+
+        async function generateAIUniversalESP() {
+            displayOutput('exploitOutput', '<div class="loading">🤖 Gerando Universal ESP com IA</div>');
+
+            const prompt = `Create a universal ESP system for Roblox that:
+- Works for players, NPCs, and items
+- Shows player names, health bars, and distance
+- Has customizable colors
+- Includes chams (Highlight instances)
+- Has boxes and tracers
+- Includes a GUI to toggle different ESP types
+- Shows through walls
+- Has performance optimization
+
+Return ONLY the Luau code.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('exploitOutput', code, '👁️ Universal ESP Gerado!');
+            } catch (error) {
+                displayOutput('exploitOutput', '❌ Erro ao gerar código.');
+            }
+        }
+
+        async function generateAIAntiAFK() {
+            displayOutput('exploitOutput', '<div class="loading">🤖 Gerando Anti-AFK com IA</div>');
+
+            const prompt = `Create an Anti-AFK script for Roblox that:
+- Prevents the player from being kicked for inactivity
+- Simulates player input randomly
+- Has minimal performance impact
+- Works on all games
+- Includes a small GUI showing status
+- Can be toggled on/off
+
+Return ONLY the Luau code.`;
+
+            try {
+                const code = await callOpenRouterAPI(prompt);
+                displayOutput('exploitOutput', code, '⏰ Anti-AFK Gerado!');
+            } catch (error) {
+                displayOutput('exploitOutput', '❌ Erro ao gerar código.');
+            }
+        }
+
+        function loadTemplate(templateName) {
+            const templates = {
+                esp: `-- ESP Completo com Highlight
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local espEnabled = true
+local espColor = Color3.fromRGB(255, 0, 0)
+
+local function createESP(player)
+    if player == LocalPlayer then return end
+    
+    local function addHighlight(character)
+        -- Remover highlight antigo se existir
+        local oldHighlight = character:FindFirstChild("ESP_Highlight")
+        if oldHighlight then oldHighlight:Destroy() end
+        
+        -- Criar novo highlight
+        local highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Highlight"
+        highlight.Parent = character
+        highlight.FillColor = espColor
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.FillTransparency = 0.5
+        highlight.OutlineTransparency = 0
+        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        
+        -- Criar nome e distância
+        local head = character:WaitForChild("Head", 5)
+        if head then
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ESP_Billboard"
+            billboard.Parent = head
+            billboard.AlwaysOnTop = true
+            billboard.Size = UDim2.new(0, 100, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 3, 0)
+            
+            local nameLabel = Instance.new("TextLabel")
+            nameLabel.Parent = billboard
+            nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+            nameLabel.BackgroundTransparency = 1
+            nameLabel.Text = player.Name
+            nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            nameLabel.TextStrokeTransparency = 0
+            nameLabel.Font = Enum.Font.SourceSansBold
+            nameLabel.TextSize = 14
+            
+            local distanceLabel = Instance.new("TextLabel")
+            distanceLabel.Name = "Distance"
+            distanceLabel.Parent = billboard
+            distanceLabel.Size = UDim2.new(1, 0, 0.5, 0)
+            distanceLabel.Position = UDim2.new(0, 0, 0.5, 0)
+            distanceLabel.BackgroundTransparency = 1
+            distanceLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            distanceLabel.TextStrokeTransparency = 0
+            distanceLabel.Font = Enum.Font.SourceSans
+            distanceLabel.TextSize = 12
+            
+            -- Atualizar distância
+            RunService.RenderStepped:Connect(function()
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
+                   and character and character:FindFirstChild("HumanoidRootPart") then
+                    local distance = (LocalPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
+                    distanceLabel.Text = string.format("%.1f studs", distance)
+                end
+            end)
+        end
+    end
+    
+    if player.Character then
+        addHighlight(player.Character)
+    end
+    
+    player.CharacterAdded:Connect(addHighlight)
+end
+
+-- Aplicar ESP em todos os jogadores
+for _, player in pairs(Players:GetPlayers()) do
+    createESP(player)
+end
+
+-- Aplicar ESP em novos jogadores
+Players.PlayerAdded:Connect(createESP)
+
+print("✅ ESP Ativado!")
+print("Todos os jogadores agora estão visíveis através das paredes")`,
+
+                speed: `-- Speed Hack Avançado
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+local normalSpeed = 16
+local boostSpeed = 100
+local currentSpeed = normalSpeed
+
+local function setSpeed(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = currentSpeed
+end
+
+-- Aplicar no personagem atual
+if Player.Character then
+    setSpeed(Player.Character)
+end
+
+-- Aplicar quando spawnar
+Player.CharacterAdded:Connect(setSpeed)
+
+-- Tecla Shift para boost temporário
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.LeftShift then
+        currentSpeed = boostSpeed
+        if Player.Character then
+            setSpeed(Player.Character)
+        end
+        print("⚡ Speed Boost: " .. boostSpeed)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.LeftShift then
+        currentSpeed = normalSpeed
+        if Player.Character then
+            setSpeed(Player.Character)
+        end
+        print("🚶 Speed Normal: " .. normalSpeed)
+    end
+end)
+
+print("✅ Speed Hack carregado!")
+print("Segure Shift para boost temporário")`,
+
+                noclip: `-- Noclip Avançado
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+local noclipEnabled = true
+
+local function noclip()
+    if not noclipEnabled then return end
+    
+    if Player.Character then
+        for _, part in pairs(Player.Character:GetDescendants()) do
+            if part:IsA("BasePart") and part.CanCollide then
+                part.CanCollide = false
+            end
+        end
+    end
+end
+
+-- Ativar noclip constantemente
+local connection = RunService.Stepped:Connect(noclip)
+
+-- Toggle com N
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.N then
+        noclipEnabled = not noclipEnabled
+        
+        if noclipEnabled then
+            print("✅ Noclip ATIVADO")
+        else
+            print("❌ Noclip DESATIVADO")
+            -- Restaurar colisão
+            if Player.Character then
+                for _, part in pairs(Player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = true
+                    end
+                end
+            end
+        end
+    end
+end)
+
+print("✅ Noclip carregado!")
+print("Pressione N para ativar/desativar")`,
+
+                fly: `-- Fly Hack Completo (WASD + Space/Shift)
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+
+local flying = false
+local speed = 50
+local bodyVelocity, bodyGyro
+local flyConnection
+
+local function startFly()
+    local character = Player.Character
+    if not character then return end
+    
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not rootPart or not humanoid then return end
+    
+    flying = true
+    
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+    bodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    bodyVelocity.Parent = rootPart
+    
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+    bodyGyro.P = 9e4
+    bodyGyro.Parent = rootPart
+    
+    flyConnection = RunService.Heartbeat:Connect(function()
+        if not flying then return end
+        
+        local camera = workspace.CurrentCamera
+        local cameraCFrame = camera.CFrame
+        
+        bodyGyro.CFrame = cameraCFrame
+        
+        local direction = Vector3.new(0, 0, 0)
+        
+        -- WASD Movement
+        if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+            direction = direction + cameraCFrame.LookVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+            direction = direction - cameraCFrame.LookVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+            direction = direction - cameraCFrame.RightVector
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+            direction = direction + cameraCFrame.RightVector
+        end
+        
+        -- Space (up) / Shift (down)
+        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+            direction = direction + Vector3.new(0, 1, 0)
+        end
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+            direction = direction - Vector3.new(0, 1, 0)
+        end
+        
+        if direction.Magnitude > 0 then
+            direction = direction.Unit
+        end
+        
+        bodyVelocity.Velocity = direction * speed
+    end)
+    
+    print("✅ Fly ATIVADO (Speed: " .. speed .. ")")
+end
+
+local function stopFly()
+    flying = false
+    
+    if bodyVelocity then 
+        bodyVelocity:Destroy() 
+        bodyVelocity = nil
+    end
+    
+    if bodyGyro then 
+        bodyGyro:Destroy()
+        bodyGyro = nil
+    end
+    
+    if flyConnection then
+        flyConnection:Disconnect()
+        flyConnection = nil
+    end
+    
+    print("❌ Fly DESATIVADO")
+end
+
+-- Toggle com X
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.X then
+        if flying then
+            stopFly()
+        else
+            startFly()
+        end
+    end
+end)
+
+print("🎮 Fly Hack carregado!")
+print("Pressione X para ativar/desativar")
+print("WASD para mover | Space para subir | Shift para descer")`,
+
+                teleport: `-- Teleport GUI Completo
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+-- Criar GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "TeleportGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = Player.PlayerGui
+
+-- Frame principal
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(0, 250, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -125, 0.5, -200)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BorderSizePixel = 0
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+-- Título
+local Title = Instance.new("TextLabel")
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Title.BorderSizePixel = 0
+Title.Text = "Teleport Menu"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 20
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 10)
+TitleCorner.Parent = Title
+
+-- Botão fechar
+local CloseButton = Instance.new("TextButton")
+CloseButton.Parent = Title
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 18
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 5)
+CloseCorner.Parent = CloseButton
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- ScrollingFrame para lista de jogadores
+local PlayerList = Instance.new("ScrollingFrame")
+PlayerList.Parent = MainFrame
+PlayerList.Size = UDim2.new(1, -20, 1, -60)
+PlayerList.Position = UDim2.new(0, 10, 0, 50)
+PlayerList.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+PlayerList.BorderSizePixel = 0
+PlayerList.ScrollBarThickness = 6
+
+local ListCorner = Instance.new("UICorner")
+ListCorner.CornerRadius = UDim.new(0, 8)
+ListCorner.Parent = PlayerList
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = PlayerList
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.SortOrder = Enum.SortOrder.Name
+
+-- Função para adicionar jogador à lista
+local function addPlayerButton(player)
+    if player == Player then return end
+    
+    local Button = Instance.new("TextButton")
+    Button.Name = player.Name
+    Button.Parent = PlayerList
+    Button.Size = UDim2.new(1, -10, 0, 35)
+    Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Button.Text = player.Name
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.Font = Enum.Font.SourceSans
+    Button.TextSize = 16
+    
+    local ButtonCorner = Instance.new("UICorner")
+    ButtonCorner.CornerRadius = UDim.new(0, 6)
+    ButtonCorner.Parent = Button
+    
+    Button.MouseButton1Click:Connect(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") 
+           and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+            Player.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+            print("✅ Teleportado para: " .. player.Name)
+        else
+            print("❌ Não foi possível teleportar para: " .. player.Name)
+        end
+    end)
+    
+    Button.MouseEnter:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    end)
+    
+    Button.MouseLeave:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end)
+end
+
+-- Adicionar todos os jogadores
+for _, player in pairs(Players:GetPlayers()) do
+    addPlayerButton(player)
+end
+
+-- Adicionar novos jogadores
+Players.PlayerAdded:Connect(addPlayerButton)
+
+-- Remover jogadores que saíram
+Players.PlayerRemoving:Connect(function(player)
+    local button = PlayerList:FindFirstChild(player.Name)
+    if button then
+        button:Destroy()
+    end
+end)
+
+-- Atualizar tamanho do canvas
+local function updateCanvasSize()
+    PlayerList.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
+end
+
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+updateCanvasSize()
+
+-- Tornar GUI arrastável
+local dragging = false
+local dragInput, dragStart, startPos
+
+MainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+print("✅ Teleport GUI carregado!")`,
+
+                autofarm: `-- Auto Farm Universal
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+
+local farming = false
+local farmConnection
+
+-- Configurações (ajuste conforme o jogo)
+local collectibleNames = {"Coin", "Cash", "Money", "Gem", "Diamond", "Collectible"}
+local farmRadius = 100 -- Raio de busca em studs
+
+-- GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AutoFarmGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = Player.PlayerGui
+
+local Frame = Instance.new("Frame")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 200, 0, 150)
+Frame.Position = UDim2.new(1, -220, 0, 20)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = Frame
+
+local Title = Instance.new("TextLabel")
+Title.Parent = Frame
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "Auto Farm"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 18
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Parent = Frame
+ToggleButton.Size = UDim2.new(0, 160, 0, 40)
+ToggleButton.Position = UDim2.new(0.5, -80, 0, 40)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+ToggleButton.Text = "Start Farming"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 16
+
+local ButtonCorner = Instance.new("UICorner")
+ButtonCorner.CornerRadius = UDim.new(0, 8)
+ButtonCorner.Parent = ToggleButton
+
+local Counter = Instance.new("TextLabel")
+Counter.Parent = Frame
+Counter.Size = UDim2.new(1, 0, 0, 30)
+Counter.Position = UDim2.new(0, 0, 0, 90)
+Counter.BackgroundTransparency = 1
+Counter.Text = "Collected: 0"
+Counter.TextColor3 = Color3.fromRGB(255, 255, 255)
+Counter.Font = Enum.Font.SourceSans
+Counter.TextSize = 14
+
+local Status = Instance.new("TextLabel")
+Status.Parent = Frame
+Status.Size = UDim2.new(1, 0, 0, 20)
+Status.Position = UDim2.new(0, 0, 0, 120)
+Status.BackgroundTransparency = 1
+Status.Text = "Status: Idle"
+Status.TextColor3 = Color3.fromRGB(200, 200, 200)
+Status.Font = Enum.Font.SourceSans
+Status.TextSize = 12
+
+local collected = 0
+
+local function findNearestCollectible()
+    if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then
+        return nil
+    end
+    
+    local playerPos = Player.Character.HumanoidRootPart.Position
+    local nearest = nil
+    local shortestDistance = farmRadius
+    
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            local isCollectible = false
+            
+            for _, name in ipairs(collectibleNames) do
+                if string.find(string.lower(obj.Name), string.lower(name)) then
+                    isCollectible = true
+                    break
+                end
+            end
+            
+            if isCollectible then
+                local objPos = obj:IsA("Model") and obj:GetModelCFrame().Position or obj.Position
+                local distance = (playerPos - objPos).Magnitude
+                
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    nearest = obj
+                end
+            end
+        end
+    end
+    
+    return nearest
+end
+
+local function farmLoop()
+    if not farming then return end
+    
+    local collectible = findNearestCollectible()
+    
+    if collectible and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+        Status.Text = "Status: Farming..."
+        
+        local targetPos = collectible:IsA("Model") and collectible:GetModelCFrame() or collectible.CFrame
+        Player.Character.HumanoidRootPart.CFrame = targetPos
+        
+        task.wait(0.1)
+        
+        -- Verificar se coletou
+        if not collectible.Parent then
+            collected = collected + 1
+            Counter.Text = "Collected: " .. collected
+        end
+    else
+        Status.Text = "Status: Searching..."
+    end
+    
+    task.wait(0.2)
+end
+
+ToggleButton.MouseButton1Click:Connect(function()
+    farming = not farming
+    
+    if farming then
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        ToggleButton.Text = "Stop Farming"
+        Status.Text = "Status: Active"
+        
+        farmConnection = RunService.Heartbeat:Connect(farmLoop)
+    else
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+        ToggleButton.Text = "Start Farming"
+        Status.Text = "Status: Stopped"
+        
+        if farmConnection then
+            farmConnection:Disconnect()
+        end
+    end
+end)
+
+print("✅ Auto Farm carregado!")
+print("Configure 'collectibleNames' no script para seu jogo")`,
+
+                godmode: `-- God Mode Avançado
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local godmodeEnabled = false
+
+local function enableGodMode(character)
+    if not godmodeEnabled then return end
+    
+    local humanoid = character:WaitForChild("Humanoid")
+    
+    -- Método 1: Saúde infinita
+    humanoid.MaxHealth = math.huge
+    humanoid.Health = math.huge
+    
+    -- Método 2: Resetar saúde sempre que mudar
+    local connection
+    connection = humanoid.Changed:Connect(function(property)
+        if not godmodeEnabled then
+            connection:Disconnect()
+            return
+        end
+        
+        if property == "Health" and humanoid.Health < math.huge then
+            humanoid.Health = math.huge
+        end
+    end)
+    
+    -- Método 3: Remover HealthChanged
+    humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+        if godmodeEnabled and humanoid.Health < math.huge then
+            humanoid.Health = math.huge
+        end
+    end)
+    
+    print("✅ God Mode ativado!")
+    print("Saúde: INFINITA")
+end
+
+local function disableGodMode(character)
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.MaxHealth = 100
+        humanoid.Health = 100
+    end
+    
+    print("❌ God Mode desativado")
+end
+
+-- Ativar god mode
+godmodeEnabled = true
+
+if Player.Character then
+    enableGodMode(Player.Character)
+end
+
+Player.CharacterAdded:Connect(function(character)
+    if godmodeEnabled then
+        enableGodMode(character)
+    end
+end)
+
+-- Toggle com G
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.G then
+        godmodeEnabled = not godmodeEnabled
+        
+        if godmodeEnabled then
+            if Player.Character then
+                enableGodMode(Player.Character)
+            end
+        else
+            if Player.Character then
+                disableGodMode(Player.Character)
+            end
+        end
+    end
+end)
+
+print("🛡️ God Mode carregado!")
+print("Pressione G para ativar/desativar")`,
+
+                aimbot: `-- Aimbot Básico (Para combat games)
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Camera = workspace.CurrentCamera
+local Player = Players.LocalPlayer
+
+local aimbotEnabled = false
+local teamCheck = true
+local visibilityCheck = true
+local maxDistance = 500
+local smoothness = 0.5 -- 0 = instantâneo, 1 = muito suave
+
+local function getClosestPlayer()
+    local closestPlayer = nil
+    local shortestDistance = maxDistance
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= Player and player.Character then
+            -- Team check
+            if teamCheck and player.Team == Player.Team then
+                continue
+            end
+            
+            local character = player.Character
+            local head = character:FindFirstChild("Head")
+            
+            if head then
+                local screenPos, onScreen = Camera:WorldToViewportPoint(head.Position)
+                
+                if onScreen then
+                    local distance = (head.Position - Camera.CFrame.Position).Magnitude
+                    
+                    if distance < shortestDistance then
+                        -- Visibility check
+                        if visibilityCheck then
+                            local ray = Ray.new(Camera.CFrame.Position, (head.Position - Camera.CFrame.Position).Unit * distance)
+                            local part = workspace:FindPartOnRayWithIgnoreList(ray, {Player.Character, Camera})
+                            
+                            if part and part:IsDescendantOf(character) then
+                                closestPlayer = player
+                                shortestDistance = distance
+                            end
+                        else
+                            closestPlayer = player
+                            shortestDistance = distance
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    return closestPlayer
+end
+
+-- Aimbot loop
+RunService.RenderStepped:Connect(function()
+    if not aimbotEnabled then return end
+    
+    local target = getClosestPlayer()
+    
+    if target and target.Character then
+        local head = target.Character:FindFirstChild("Head")
+        
+        if head then
+            local targetCFrame = CFrame.new(Camera.CFrame.Position, head.Position)
+            Camera.CFrame = Camera.CFrame:Lerp(targetCFrame, smoothness)
+        end
+    end
+end)
+
+-- Toggle com Right Mouse Button
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        aimbotEnabled = true
+        print("✅ Aimbot ATIVADO")
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        aimbotEnabled = false
+        print("❌ Aimbot DESATIVADO")
+    end
+end)
+
+-- Toggle permanente com T
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    
+    if input.KeyCode == Enum.KeyCode.T then
+        aimbotEnabled = not aimbotEnabled
+        print(aimbotEnabled and "✅ Aimbot PERMANENTE ATIVADO" or "❌ Aimbot DESATIVADO")
+    end
+end)
+
+print("🎯 Aimbot carregado!")
+print("Segure botão direito do mouse para aimbot temporário")
+print("Pressione T para toggle permanente")
+print("Configurações:")
+print("- Team Check:", teamCheck)
+print("- Visibility Check:", visibilityCheck)
+print("- Max Distance:", maxDistance)
+print("- Smoothness:", smoothness)`
+            };
+
+            if (templates[templateName]) {
+                displayOutput('templateOutput', templates[templateName], '📚 Template: ' + templateName.toUpperCase());
+            }
+        }
+    </script>
+</body>
+  </html>
